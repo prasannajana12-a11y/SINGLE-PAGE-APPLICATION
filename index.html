@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion React SPA</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Custom glow effect for buttons */
+        .btn-glow {
+            box-shadow: 0 0 10px rgba(192, 132, 252, 0.5), 0 0 20px rgba(192, 132, 252, 0.3);
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.7), 0 0 30px rgba(192, 132, 252, 0.5);
+        }
+
+        /* Custom glow for title */
+        .title-glow {
+            text-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 min-h-screen flex items-center justify-center p-6">
+
+    <div class="container mx-auto max-w-4xl text-center">
+        
+        <!-- Main Header -->
+        <header id="main-header">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-purple-400 title-glow">
+                Single Page Application
+            </h1>
+            <p class="text-gray-400 text-lg mt-3">
+                Click an emotion to learn more about it!
+            </p>
+        </header>
+
+        <!-- Emotion Buttons Navigation -->
+        <nav class="flex flex-wrap justify-center gap-3 md:gap-4 my-12" id="emotion-nav">
+            <button data-emotion="HAPPY" class="emotion-btn py-2 px-5 rounded-full font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow">
+                HAPPY
+            </button>
+            <button data-emotion="SAD" class="emotion-btn py-2 px-5 rounded-full font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow">
+                SAD
+            </button>
+            <button data-emotion="JUST FINE" class="emotion-btn py-2 px-5 rounded-full font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow">
+                JUST FINE
+            </button>
+            <button data-emotion="BROKEN" class="emotion-btn py-2 px-5 rounded-full font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow">
+                BROKEN
+            </button>
+            <button data-emotion="SLEEPY" class="emotion-btn py-2 px-5 rounded-full font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow">
+                SLEEPY
+            </button>
+            <button data-emotion="ANGRY" class="emotion-btn py-2 px-5 rounded-full font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow">
+                ANGRY
+            </button>
+            <button data-emotion="IN LOVE" class="emotion-btn py-2 px-5 rounded-full font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow">
+                IN LOVE
+            </button>
+            <button data-emotion="SURPRISED" class="emotion-btn py-2 px-5 rounded-full font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-glow">
+                SURPRISED
+            </button>
+        </nav>
+
+        <!-- Content Display Area -->
+        <!-- This section is hidden by default and will be shown by JavaScript -->
+        <main id="content-display" class="hidden bg-gray-800 p-8 rounded-lg shadow-xl max-w-2xl mx-auto text-left relative transition-all duration-500 ease-in-out">
+            <button id="close-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <!-- UPDATED: Added a flex container and a span for the emoji -->
+            <div class="flex items-center mb-4">
+                <span id="content-emoji" class="text-4xl mr-4"></span>
+                <h2 id="content-title" class="text-3xl font-bold text-purple-400"></h2>
+            </div>
+            <p id="content-text" class="text-gray-300 leading-relaxed"></p>
+        </main>
+
+    </div>
+
+    <script>
+        // --- Database for our emotion content ---
+        // UPDATED: Added 'emoji' property to each object
+        const emotionData = {
+            "HAPPY": {
+                emoji: "😊",
+                title: "On Being Happy",
+                text: "Happiness is a state of well-being characterized by positive emotions ranging from contentment to intense joy. It's often associated with life satisfaction, moments of pleasure, and a deeper sense of meaning or purpose."
+            },
+            "SAD": {
+                emoji: "😢",
+                title: "It's Okay to be Sad",
+                text: "Sadness is an emotional pain associated with, or characterized by, feelings of disadvantage, loss, despair, grief, helplessness, and sorrow. It's a natural human response to difficult situations and is a normal part of life."
+            },
+            "JUST FINE": {
+                emoji: "😐",
+                title: "Feeling 'Just Fine'",
+                text: "Sometimes we're not overwhelmingly happy or deeply sad. 'Just fine' or 'content' is a neutral, stable state. It can be a peaceful place, free from strong emotional highs and lows, indicating a sense of balance."
+            },
+            "BROKEN": {
+                emoji: "💔",
+                title: "Feeling Broken",
+                text: "Feeling 'broken' often describes a deep sense of emotional pain, despair, or hopelessness, as if a core part of you has been shattered. It's a powerful feeling that can stem from trauma, loss, or extreme stress. It is a sign that you need care and support."
+            },
+            "SLEEPY": {
+                emoji: "😴",
+                title: "Why so Sleepy?",
+                text: "Sleepiness is the feeling of needing to sleep. It can be a natural response to a long day, lack of sleep, or boredom. It's your body's signal that it needs to rest, repair, and consolidate memories."
+            },
+            "ANGRY": {
+                emoji: "😠",
+                title: "I am Anger",
+                text: "Anger is an intense emotion you feel when something has gone wrong or someone has wronged you. It can be a response to frustration, threat, or injustice. While it's a normal emotion, it's important to manage it in a healthy way."
+            },
+            "IN LOVE": {
+                emoji: "😍",
+                title: "Being in Love",
+                text: "Being in love is a complex and powerful emotion involving deep affection, attachment, and intimacy. It often includes feelings of euphoria, strong attraction, and a deep sense of care for another person's well-being."
+            },
+            "SURPRISED": {
+                emoji: "😮",
+                title: "That's Surprising!",
+                text: "Surprise is a brief emotional state experienced as the result of an unexpected event. It can be neutral, pleasant, or unpleasant, and it serves to focus your attention on the new situation so you can assess it."
+            }
+        };
+
+        // --- Get DOM Elements ---
+        const emotionNav = document.getElementById('emotion-nav');
+        const contentDisplay = document.getElementById('content-display');
+        const contentEmoji = document.getElementById('content-emoji'); // UPDATED: Added emoji span
+        const contentTitle = document.getElementById('content-title');
+        const contentText = document.getElementById('content-text');
+        const closeBtn = document.getElementById('close-btn');
+        const mainHeader = document.getElementById('main-header');
+
+        // --- Event Listeners ---
+
+        // Listen for clicks on the button container
+        emotionNav.addEventListener('click', function(event) {
+            // Check if the clicked element is a button
+            if (event.target.classList.contains('emotion-btn')) {
+                const emotion = event.target.dataset.emotion;
+                const data = emotionData[emotion];
+
+                if (data) {
+                    // Populate and show the content
+                    updateContent(data);
+                }
+            }
+        });
+
+        // Listen for click on the close button
+        closeBtn.addEventListener('click', function() {
+            hideContent();
+        });
+
+        // --- Functions ---
+
+        function updateContent(data) {
+            // Set the text content
+            contentEmoji.textContent = data.emoji; // UPDATED: Set emoji
+            contentTitle.textContent = data.title;
+            contentText.textContent = data.text;
+
+            // Hide the header and nav, show the content
+            mainHeader.classList.add('hidden');
+            emotionNav.classList.add('hidden');
+            contentDisplay.classList.remove('hidden');
+        }
+
+        function hideContent() {
+            // Hide the content, show the header and nav
+            contentDisplay.classList.add('hidden');
+            mainHeader.classList.remove('hidden');
+            emotionNav.classList.remove('hidden');
+
+            // Clear the content
+            contentEmoji.textContent = ''; // UPDATED: Clear emoji
+            contentTitle.textContent = '';
+            contentText.textContent = '';
+        }
+
+    </script>
+
+</body>
+</html>
+
+
